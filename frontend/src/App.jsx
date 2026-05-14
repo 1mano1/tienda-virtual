@@ -33,7 +33,7 @@ export default function App() {
     <main>
       <section className="hero">
         <div>
-          <p className="eyebrow">Practica de Seguridad</p>
+          <p className="eyebrow">Practica de Seguridad - Versión Asegurada</p>
           <h1>Pruebas automaticas</h1>
           <p>Desarrollo de Software Seguro | IS | Articulos universitarios</p>
         </div>

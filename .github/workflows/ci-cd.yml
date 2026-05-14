@@ -44,17 +44,15 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      - name: Start Backend
+        run: npm start &
+        working-directory: backend
+
       - name: Cypress E2E Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: frontend
           start: npm run dev
-          wait-on: 'http://localhost:5173'
-          # We also need the backend running for Cypress
+          wait-on: 'http://localhost:5173, http://localhost:4000/api/salud'
         env:
           VITE_API_URL: http://localhost:4000/api
-
-      # Note: For the above to work perfectly, we'd typically need to start the backend too.
-      # A better way is using a background process for the backend:
-      # - run: npm start &
-      #   working-directory: backend
