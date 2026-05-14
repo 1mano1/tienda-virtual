@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-and-test:
+    if: github.head_ref == 'develop'
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_NODE_VERSION: 24
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install Backend Dependencies
+        run: npm ci
+        working-directory: backend
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Run Backend Tests
+        run: npm test
+        working-directory: backend
+
+      - name: Run Frontend Tests
+        run: npm test
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Cypress E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          start: npm run dev
+          wait-on: 'http://localhost:5173'
+          # We also need the backend running for Cypress
+        env:
+          VITE_API_URL: http://localhost:4000/api
+
+      # Note: For the above to work perfectly, we'd typically need to start the backend too.
+      # A better way is using a background process for the backend:
+      # - run: npm start &
+      #   working-directory: backend

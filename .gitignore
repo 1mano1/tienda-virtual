@@ -1,0 +1,14 @@
+node_modules
+.env
+.env.*
+dist
+coverage
+.DS_Store
+cypress/videos
+cypress/screenshots
+
+# pnpm
+pnpm-lock.yaml
+.pnpm-debug.log
+pnpm-workspace.yaml
+node_modules/.pnpm
